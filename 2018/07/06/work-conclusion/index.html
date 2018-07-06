@@ -448,6 +448,9 @@
           
 
   
+    <div id="gitalk-container"></div>
+
+  
 
 
 
@@ -710,6 +713,23 @@
 
 
 
+
+
+
+  <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+  <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+   <script type="text/javascript">
+        var gitalk = new Gitalk({
+          clientID: 'af2b8907cb848ec54705',
+          clientSecret: '5634dde3d10ad3e1ea992fcfbdcf0a84bc38b0be',
+          repo: 'onesafe.github.io',
+          owner: 'onesafe',
+          admin: ['onesafe'],
+          id: location.pathname,
+          distractionFreeMode: 'true'
+        })
+        gitalk.render('gitalk-container')
+       </script>
 
 
 
