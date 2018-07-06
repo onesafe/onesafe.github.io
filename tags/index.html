@@ -292,6 +292,7 @@
 
   
     <div id="gitalk-container"></div>
+    <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
 
   
 
@@ -336,7 +337,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-count">3</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -559,20 +560,24 @@
 
 
 
-  <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
-  <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
-   <script type="text/javascript">
-        var gitalk = new Gitalk({
-          clientID: 'af2b8907cb848ec54705',
-          clientSecret: '5634dde3d10ad3e1ea992fcfbdcf0a84bc38b0be',
-          repo: 'onesafe.github.io',
+  
+    
+      <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+      <script type="text/javascript">
+        const gitalk = new Gitalk({
+          clientID: '04953a25a2bd5e183dcc',
+          clientSecret: 'bb61b00707f9413a8d1dbe918f9491018e919b9c',
+          repo: 'hexo-nsxt-comments',
           owner: 'onesafe',
-          admin: ['onesafe'],
-          id: location.pathname,
-          distractionFreeMode: 'true'
+          admin: 'onesafe'.split(','),
+          pagerDirection: 'last',
+          // facebook-like distraction free mode
+          distractionFreeMode: false
         })
         gitalk.render('gitalk-container')
-       </script>
+      </script>
+    
+  
 
 
 
