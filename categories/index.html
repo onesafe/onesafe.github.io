@@ -292,7 +292,7 @@
 
   
     <div id="gitalk-container"></div>
-    <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+	<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
 
   
 
@@ -560,24 +560,26 @@
 
 
 
-  
-    
-      <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
-      <script type="text/javascript">
-        const gitalk = new Gitalk({
-          clientID: '04953a25a2bd5e183dcc',
-          clientSecret: 'bb61b00707f9413a8d1dbe918f9491018e919b9c',
-          repo: 'hexo-nsxt-comments',
-          owner: 'onesafe',
-          admin: 'onesafe'.split(','),
-          pagerDirection: 'last',
-          // facebook-like distraction free mode
-          distractionFreeMode: false
-        })
-        gitalk.render('gitalk-container')
-      </script>
-    
-  
+
+
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+<script src="https://cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.js"></script>
+<script type="text/javascript">
+const gitalk = new Gitalk({
+clientID: '04953a25a2bd5e183dcc',
+clientSecret: 'bb61b00707f9413a8d1dbe918f9491018e919b9c',
+repo: 'hexo-nsxt-comments',
+owner: 'onesafe',
+admin: 'onesafe'.split(','),
+pagerDirection: 'last',
+id: md5(window.location.pathname),
+distractionFreeMode: false
+})
+gitalk.render('gitalk-container')
+</script>
+
+
+
 
 
 
