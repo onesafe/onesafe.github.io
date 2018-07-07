@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title><![CDATA[Hexo集成Gitalk评论]]></title>
+    <url>%2F2018%2F07%2F07%2Fhexo-next-gitalk%2F</url>
+    <content type="text"><![CDATA[开端想在自己的博客系统里集成评论系统，到网上一搜。最后发现Gitalk评论系统用的人最多，受称赞比较多 Gitalk Demo: https://gitalk.github.io/ 注册GitHub Application在GitHub上注册新应用，链接：https://github.com/settings/applications/new 参数说明： Application name: # 应用名称，我的名称是hexo-nsxt-comments Homepage URL: # 网站URL，如https://branw.cn Application description: # 描述，随意 Authorization callback URL: # 网站URL，https://branw.cn 填写网站URL的时候，注意要填写你自己域名的网址，没有的话就写github.io网址，我在这个地方花了好多时间，最后写对了网址URL就成功了 注册完成后会得到ClientID, Client Secret，后面配置_config.yml的时候会用到 创建repo创建一个与应用名称一样的repo，用来存放评论例如：我的repo名字就是：hexo-nsxt-comments 配置Gitalk新建/layout/_third-party/comments/gitalk.swig文件，并添加内容：123456789101112131415161718192021&#123;% if not (theme.duoshuo and theme.duoshuo.shortname) and not theme.duoshuo_shortname %&#125; &#123;% if theme.gitalk.enable %&#125; &#123;% if page.comments %&#125; &lt;script src=&quot;https://unpkg.com/gitalk/dist/gitalk.min.js&quot;&gt;&lt;/script&gt; &lt;script src=&quot;https://cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.js&quot;&gt;&lt;/script&gt; &lt;script type=&quot;text/javascript&quot;&gt; const gitalk = new Gitalk(&#123; clientID: &apos;&#123;&#123;theme.gitalk.clientID&#125;&#125;&apos;, clientSecret: &apos;&#123;&#123;theme.gitalk.clientSecret&#125;&#125;&apos;, repo: &apos;&#123;&#123;theme.gitalk.repo&#125;&#125;&apos;, owner: &apos;&#123;&#123;theme.gitalk.owner&#125;&#125;&apos;, admin: &apos;&#123;&#123;theme.gitalk.admin&#125;&#125;&apos;.split(&apos;,&apos;), pagerDirection: &apos;&#123;&#123;theme.gitalk.pagerDirection&#125;&#125;&apos;, id: md5(window.location.pathname), distractionFreeMode: false &#125;) gitalk.render(&apos;gitalk-container&apos;) &lt;/script&gt; &#123;% endif %&#125; &#123;% endif %&#125;&#123;% endif %&#125; 修改/layout/_partials/comments.swig123&#123;% elseif theme.gitalk.enable %&#125; &lt;div id=&quot;gitalk-container&quot;&gt;&lt;/div&gt; &lt;link rel=&quot;stylesheet&quot; href=&quot;https://unpkg.com/gitalk/dist/gitalk.css&quot;&gt; 修改layout/_third-party/comments/index.swig，在最后一行添加内容：1&#123;% include &apos;gitalk.swig&apos; %&#125; 在主题配置文件next/_config.yml中添加如下内容：12345678gitalk: enable: true owner: onesafe repo: hexo-nsxt-comments clientID: xxxxxxxxx clientSecret: xxxxxxxxx admin: onesafe pagerDirection: last 授权最后一步了这时候打开博客，发现评论是空的，没有创建ISSUE如果我们前面的都配置成功的话，尤其是Authorization callback URL配置成功的话这时候我们只需要用admin账户登录GitHub授权就大功告成了 下面的图就是授权的过程，点击授权就OK了]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+      <tags>
+        <tag>技术</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[平凡的生活]]></title>
+    <url>%2F2018%2F07%2F06%2Fvivian-v%2F</url>
+    <content type="text"><![CDATA[在我们短促而漫长的一生中，我们在苦苦地寻找人生的幸福。可幸福往往又与我们失之交臂。当我们为此而耗尽宝贵的青春年华，皱纹也悄悄地爬上了眼角的时候，我们或许才能懂得生活实际上意味着什么……]]></content>
+      <categories>
+        <category>生活</category>
+      </categories>
+      <tags>
+        <tag>生活</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[工作总结]]></title>
+    <url>%2F2018%2F07%2F06%2Fwork-conclusion%2F</url>
+    <content type="text"><![CDATA[我是5.10号入职现在的公司的，对我来说是一个全新的开始 5月-6月首先来是看service-manager的代码，之前对Java不熟，对我来说也是一个小小的挑战 也能够drive我很好的学习Java，感觉来了两个月，Java已经可以愉快的玩耍了 用spring-boot-starter-actuator做了service-manager的健康检查 参考service-manager写一个auto-model-online项目 image-hub的项目，是与镜像相关的 elf-bundled项目 在这个过程当中，结合写代码和看书，对Spring boot理解的更深刻了。学会使用Java Spring boot 异步，并发。]]></content>
+      <categories>
+        <category>工作</category>
+      </categories>
+      <tags>
+        <tag>工作</tag>
+      </tags>
+  </entry>
+</search>
