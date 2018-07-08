@@ -4,13 +4,20 @@
     <title><![CDATA[删除私有仓库镜像]]></title>
     <url>%2F2018%2F07%2F08%2Fdelete-docker-image%2F</url>
     <content type="text"><![CDATA[对于私有仓库的镜像，我们无法直接删除。当随着镜像的越来越多，会导致磁盘空间越来越小 阅读registry v2的http API后发现删除镜像需要调用几个API 获取image的digest 删除镜像的manifests 下面是删除私有registry的镜像脚本clean.shUsage：bash clean.sh your-image-name 需要安装jq，jq是终端解析json输出的利器 12345678910111213141516171819202122232425#!/usr/bin/env bashACCEPT_HEADER="Accept: application/vnd.docker.distribution.manifest.v2+json"DOCKER_REGISTRY="your-registry:35000/v2"AUTH="-uusername:password"REPOSITORY=$1TAGS=`curl --silent -X GET -k $AUTH $DOCKER_REGISTRY/$REPOSITORY/tags/list | jq -r '."tags"[]'`echo image $REPOSITORY has tags: $TAGSfor TAG in $&#123;TAGS[@]&#125;do echo "i am going to delete $REPOSITORY:$TAG" digest_value=`curl -X GET -k --head --silent -H "Accept: application/vnd.docker.distribution.manifest.v2+json" $AUTH $DOCKER_REGISTRY/$REPOSITORY/manifests/$TAG 2&gt;&amp;1 | grep Docker-Content-Digest | awk '&#123;print $2&#125;'` digest_url="$DOCKER_REGISTRY/$REPOSITORY/manifests/$digest_value" echo $digest_url URL=$&#123;digest_url%$'\r'&#125; curl -X DELETE -k -H "Accept: application/vnd.docker.distribution.manifest.v2+json" $AUTH $URLdone#docker exec -it registry bin/registry garbage-collect /etc/docker/registry/config.yml#REPOSITORY_PATH="/var/lib/registry/docker/registry/v2/repositories"#docker exec -it registry rm -rf $REPOSITORY_PATH/$REPOSITORY 脚本里面注释的几行需要解释一下： gc回收，我们删除image的mainfests的时候，仓库并不会删除image，只有当你调用GC回收的时候，才会删除。这个可以用crontab定时执行。 删除具体的镜像目录。（当我们用GC回收的时候，其实只是把镜像名字从仓库里面去掉了。但是实际上磁盘还是存在这个镜像的。这个只能是通过rm删除 结尾：这个脚本只是删除单一镜像。当然可以更进一步的封装，删除所有镜像等等]]></content>
+      <categories>
+        <category>docker</category>
+      </categories>
+      <tags>
+        <tag>docker</tag>
+        <tag>registry</tag>
+      </tags>
   </entry>
   <entry>
     <title><![CDATA[用registry搭建docker私有仓库]]></title>
     <url>%2F2018%2F07%2F08%2Fbuild-docker-registry%2F</url>
     <content type="text"><![CDATA[准备目录首先在根目录下创建一个文件夹registry（取名随意），在registry目录下面创建三个文件夹data，auth，certs 设置registry的用户密码1docker run --rm --entrypoint htpasswd registry:2 -Bbn &#123;&#123;username&#125;&#125; &#123;&#123;password&#125;&#125; &gt; auth/htpasswd 生成证书文件1docker run --rm -e COMMON_NAME=pek2-office-9th-10-117-169-121.eng.vmware.com -e KEY_NAME=domain -v /root/registry/certs:/certs centurylink/openssl COMMON_NAME 是你的FQDN上面的命令执行完成，你会在/root/registry/certs目录下面生成三个文件：domain.crt, domain.csr, domain.key如果你遇到permission error， 有可能是selinux的问题，可以执行setenforce 0 运行registry1docker run -d --name registry -p 5000:5000 -v /root/registry/data:/var/lib/registry -v /root/registry/auth:/auth -v /root/registry/certs:/certs -e REGISTRY_HTTP_TLS_CERTIFICATE=/certs/domain.crt -e REGISTRY_HTTP_TLS_KEY=/certs/domain.key -e "REGISTRY_AUTH=htpasswd" -e "REGISTRY_AUTH_HTPASSWD_REALM=Registry Realm" -e REGISTRY_AUTH_HTPASSWD_PATH=/auth/htpasswd registry:2 拷贝证书文件12mkdir -p /etc/docker/certs.d/pek2-office-9th-10-117-169-121.eng.vmware.com:5000cp /root/registry/certs/domain.crt /etc/docker/certs.d/pek2-office-9th-10-117-169-121.eng.vmware.com:5000 push镜像到私有Registry123docker login -u &#123;&#123;username&#125;&#125; -p &#123;&#123;password&#125;&#125; pek2-office-9th-10-117-169-121.eng.vmware.com:5000docker tag ubuntu pek2-office-9th-10-117-169-121.eng.vmware.com:5000/ubuntu:firstimagedocker push pek2-office-9th-10-117-169-121.eng.vmware.com:5000/ubuntu:firstimage 到此，我们搭建好了我们的私有仓库]]></content>
       <categories>
-        <category>技术</category>
+        <category>docker</category>
       </categories>
       <tags>
         <tag>docker</tag>
