@@ -1,6 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[kubernetes安装istio]]></title>
+    <url>%2F2018%2F07%2F10%2Fnew-to-istio%2F</url>
+    <content type="text"><![CDATA[下载Istio下载最新版的istio1curl -L https://git.io/getLatestIstio | sh - 12cd istio-0.8.0export PATH=$PWD/bin:$PATH 安装文件在install目录下，istioctl执行文件在bin目录下，一些应用在samples目录下 安装Istio1kubectl apply -f install/kubernetes/istio-demo.yaml 由于我用的是docker-for-mac，我的kubernetes是没有Loadbalancer的，所以我把istio-demo.yaml文件里的LoadBalancer改成了NodePort 验证Istio查看service和pod是否都正常运行 部署应用部署应用有两种方式： 安装了Istio-sidecar-injecor 12kubectl label namespace &lt;namespace&gt; istio-injection=enabledkubectl create -n &lt;namespace&gt; -f &lt;your-app-spec&gt;.yaml 没有安装Istio-sidecar-injecor 1kubectl create -f &lt;(istioctl kube-inject -f &lt;your-app-spec&gt;.yaml) 在这里我们部署samples里的bookinfo应用1kubectl label namespace bran istio-injection=enabled 1kubectl apply -f samples/bookinfo/kube/bookinfo.yaml -n bran 创建应用的ingress gateway1istioctl create -f samples/bookinfo/routing/bookinfo-gateway.yaml 其中在bookinfo-gateway.yaml的meta里面加了namesapce: bran 创建完成了可以看到 访问应用通过nodeport:ip/productpage访问bookinfo应用 多点几次，发现有不同的页面出现。应用用到了负载均衡]]></content>
+      <categories>
+        <category>ServiceMesh</category>
+      </categories>
+      <tags>
+        <tag>istio</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[删除私有仓库镜像]]></title>
     <url>%2F2018%2F07%2F08%2Fdelete-docker-image%2F</url>
     <content type="text"><![CDATA[对于私有仓库的镜像，我们无法直接删除。当随着镜像的越来越多，会导致磁盘空间越来越小 阅读registry v2的http API后发现删除镜像需要调用几个API 获取image的digest 删除镜像的manifests 下面是删除私有registry的镜像脚本clean.shUsage：bash clean.sh your-image-name 需要安装jq，jq是终端解析json输出的利器 12345678910111213141516171819202122232425#!/usr/bin/env bashACCEPT_HEADER="Accept: application/vnd.docker.distribution.manifest.v2+json"DOCKER_REGISTRY="your-registry:35000/v2"AUTH="-uusername:password"REPOSITORY=$1TAGS=`curl --silent -X GET -k $AUTH $DOCKER_REGISTRY/$REPOSITORY/tags/list | jq -r '."tags"[]'`echo image $REPOSITORY has tags: $TAGSfor TAG in $&#123;TAGS[@]&#125;do echo "i am going to delete $REPOSITORY:$TAG" digest_value=`curl -X GET -k --head --silent -H "Accept: application/vnd.docker.distribution.manifest.v2+json" $AUTH $DOCKER_REGISTRY/$REPOSITORY/manifests/$TAG 2&gt;&amp;1 | grep Docker-Content-Digest | awk '&#123;print $2&#125;'` digest_url="$DOCKER_REGISTRY/$REPOSITORY/manifests/$digest_value" echo $digest_url URL=$&#123;digest_url%$'\r'&#125; curl -X DELETE -k -H "Accept: application/vnd.docker.distribution.manifest.v2+json" $AUTH $URLdone#docker exec -it registry bin/registry garbage-collect /etc/docker/registry/config.yml#REPOSITORY_PATH="/var/lib/registry/docker/registry/v2/repositories"#docker exec -it registry rm -rf $REPOSITORY_PATH/$REPOSITORY 脚本里面注释的几行需要解释一下： gc回收，我们删除image的mainfests的时候，仓库并不会删除image，只有当你调用GC回收的时候，才会删除。这个可以用crontab定时执行。 删除具体的镜像目录。（当我们用GC回收的时候，其实只是把镜像名字从仓库里面去掉了。但是实际上磁盘还是存在这个镜像的。这个只能是通过rm删除 结尾：这个脚本只是删除单一镜像。当然可以更进一步的封装，删除所有镜像等等]]></content>
