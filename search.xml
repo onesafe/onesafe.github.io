@@ -1,6 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[openssl生成CA证书]]></title>
+    <url>%2F2018%2F07%2F19%2Fgenerate-crt%2F</url>
+    <content type="text"><![CDATA[生成Key文件1openssl genrsa -aes256 -out bran.key 2048 生成证书请求文件1openssl req -new -key bran.key -out bran.csr 生成证书1openssl x509 -req -days 3650 -in bran.csr -signkey bran.key -out bran.crt]]></content>
+      <categories>
+        <category>技术</category>
+      </categories>
+      <tags>
+        <tag>技术</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[kubernetes安装istio]]></title>
     <url>%2F2018%2F07%2F10%2Fnew-to-istio%2F</url>
     <content type="text"><![CDATA[下载Istio下载最新版的istio1curl -L https://git.io/getLatestIstio | sh - 12cd istio-0.8.0export PATH=$PWD/bin:$PATH 安装文件在install目录下，istioctl执行文件在bin目录下，一些应用在samples目录下 安装Istio1kubectl apply -f install/kubernetes/istio-demo.yaml 由于我用的是docker-for-mac，我的kubernetes是没有Loadbalancer的，所以我把istio-demo.yaml文件里的LoadBalancer改成了NodePort 验证Istio查看service和pod是否都正常运行 部署应用部署应用有两种方式： 安装了Istio-sidecar-injecor 12kubectl label namespace &lt;namespace&gt; istio-injection=enabledkubectl create -n &lt;namespace&gt; -f &lt;your-app-spec&gt;.yaml 没有安装Istio-sidecar-injecor 1kubectl create -f &lt;(istioctl kube-inject -f &lt;your-app-spec&gt;.yaml) 在这里我们部署samples里的bookinfo应用1kubectl label namespace bran istio-injection=enabled 1kubectl apply -f samples/bookinfo/kube/bookinfo.yaml -n bran 创建应用的ingress gateway1istioctl create -f samples/bookinfo/routing/bookinfo-gateway.yaml 其中在bookinfo-gateway.yaml的meta里面加了namesapce: bran 创建完成了可以看到 访问应用通过nodeport:ip/productpage访问bookinfo应用 多点几次，发现有不同的页面出现。应用用到了负载均衡]]></content>
